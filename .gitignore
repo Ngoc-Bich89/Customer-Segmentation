@@ -1,0 +1,16 @@
+# Byte-compiled / cache
+__pycache__/
+*.pyc
+
+# Data / model
+*.pkl
+*.parquet
+*.csv
+
+# Virtual environment
+.venv/
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
