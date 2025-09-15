@@ -304,7 +304,7 @@ with tabs[5]:
 
             # Hiển thị từng trang
             for i, page in enumerate(pages, start=1):
-                st.image(page, caption=f"Trang {i}", use_column_width=True)
+                st.image(page, caption=f"Trang {i}", use_container_width=True)
 
         except Exception as e:
             st.error(f"❌ Không load được PDF: {e}")
