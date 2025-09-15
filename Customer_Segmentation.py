@@ -278,22 +278,23 @@ with tabs[4]:
 
 # ---------------- 6. Final Report ----------------
 with tabs[5]:
-    st.header("Final Report")
-    report_file = "final_report.pptx"  # em để file pptx trong repo
-    if os.path.exists(report_file):
-        # Convert PPTX -> PDF bằng LibreOffice CLI
-        os.system(f"libreoffice --headless --convert-to pdf {report_file} --outdir .")
-        pdf_file = report_file.replace(".pptx", ".pdf")
-
-        if os.path.exists(pdf_file):
-            slides = convert_from_path(pdf_file)
-            st.subheader("📑 Slide Preview")
-            for i, slide in enumerate(slides, 1):
-                st.image(slide, caption=f"Slide {i}", use_container_width=True)
-        else:
-            st.error("❌ Không convert được PPTX sang PDF.")
+    st.header("📑 Final Report")
+    pdf_file = "final_report.pdf"  # đặt file PDF vào repo cùng app
+    if os.path.exists(pdf_file):
+        try:
+            with open(pdf_file, "rb") as f:
+                base64_pdf = base64.b64encode(f.read()).decode("utf-8")
+            # Hiển thị PDF embedded trong app
+            pdf_display = f"""
+            <iframe src="data:application/pdf;base64,{base64_pdf}" 
+                    width="100%" height="800" type="application/pdf"></iframe>
+            """
+            st.markdown(pdf_display, unsafe_allow_html=True)
+            st.info("📌 Bạn có thể cuộn và lật từng trang báo cáo ngay trong app.")
+        except Exception as e:
+            st.error(f"❌ Lỗi khi tải báo cáo PDF: {e}")
     else:
-        st.warning("⚠️ Report file not found. Please add `final_report.pptx` to the repo.")
+        st.warning("⚠️ Report file not found. Vui lòng thêm `final_report.pdf` vào repo.")
 # ---------------- Footer ----------------
 image_path = Path("output/ava.png")
 with open(image_path, "rb") as f:
