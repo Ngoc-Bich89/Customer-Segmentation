@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import sys
 from pathlib import Path
 import streamlit.components.v1 as components
+from pdf2image import convert_from_path
 #import java_bootstrap
 
 # ---------------- Spark Session ----------------
@@ -293,14 +294,21 @@ with tabs[5]:
             mime="application/pdf"
         )
 
-        # Nhúng PDF hiển thị trực tiếp
-        base64_pdf = base64.b64encode(pdf_bytes).decode("utf-8")
-        pdf_display = f"""
-        <iframe src="data:application/pdf;base64,{base64_pdf}" 
-                width="100%" height="800" type="application/pdf"></iframe>
-        """
-        components.html(pdf_display, height=800, scrolling=True)
+        try:
+            from pdf2image import convert_from_path
 
+            # Convert PDF thành list ảnh (mỗi trang 1 ảnh)
+            pages = convert_from_path(pdf_file, dpi=150)
+
+            st.success(f"📄 Report loaded successfully! ({len(pages)} pages)")
+
+            # Hiển thị từng trang
+            for i, page in enumerate(pages, start=1):
+                st.image(page, caption=f"Trang {i}", use_column_width=True)
+
+        except Exception as e:
+            st.error(f"❌ Không load được PDF: {e}")
+            st.info("👉 Cần cài thư viện `pdf2image` và `poppler` để chạy được.")
     else:
         st.warning("⚠️ Report file not found. Vui lòng thêm `final_report.pdf` vào repo.")
 # ---------------- Footer ----------------
