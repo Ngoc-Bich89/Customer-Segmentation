@@ -91,10 +91,12 @@ with tabs[1]:
 # =========================
 # Load trained pipeline model
 # =========================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 @st.cache_resource
 def load_models():
-    scaler_model = StandardScalerModel.load("output/scaler_model")
-    kmeans_model = KMeansModel.load("output/kmeans_model")
+    scaler_model = StandardScalerModel.load(os.path.join(BASE_DIR, "output/scaler_model"))
+    kmeans_model = KMeansModel.load(os.path.join(BASE_DIR, "output/kmeans_model"))
     return scaler_model, kmeans_model
 
 scaler_model, kmeans_model = load_models()
