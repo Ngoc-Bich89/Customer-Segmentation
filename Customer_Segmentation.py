@@ -14,8 +14,6 @@ import matplotlib.pyplot as plt
 import sys
 from pathlib import Path
 from pdf2image import convert_from_path
-from pptx2pdf import convert
-from PIL import Image
 #import java_bootstrap
 
 # ---------------- Spark Session ----------------
@@ -283,19 +281,17 @@ with tabs[5]:
     st.header("Final Report")
     report_file = "final_report.pptx"  # em để file pptx trong repo
     if os.path.exists(report_file):
-        # Nút download
-        st.download_button(
-            "📥 Download Report PPTX",
-            data=open(report_file, "rb"),
-            file_name="Customer_Segmentation_Report.pptx")
-        st.markdown("Or view slides offline after download.")
+        # Convert PPTX -> PDF bằng LibreOffice CLI
+        os.system(f"libreoffice --headless --convert-to pdf {report_file} --outdir .")
+        pdf_file = report_file.replace(".pptx", ".pdf")
 
-        # Convert pptx -> pdf -> ảnh để hiển thị
-        convert(report_file, "temp_report.pdf")
-        slides = convert_from_path("temp_report.pdf")
-        st.subheader("📑 Slide Preview")
-        for i, slide in enumerate(slides, 1):
-            st.image(slide, caption=f"Slide {i}", use_container_width=True)
+        if os.path.exists(pdf_file):
+            slides = convert_from_path(pdf_file)
+            st.subheader("📑 Slide Preview")
+            for i, slide in enumerate(slides, 1):
+                st.image(slide, caption=f"Slide {i}", use_container_width=True)
+        else:
+            st.error("❌ Không convert được PPTX sang PDF.")
     else:
         st.warning("⚠️ Report file not found. Please add `final_report.pptx` to the repo.")
 # ---------------- Footer ----------------
