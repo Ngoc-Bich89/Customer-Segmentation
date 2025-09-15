@@ -100,7 +100,11 @@ def load_models():
     return scaler_model, kmeans_model
 
 scaler_model, kmeans_model = load_models()
-
+print("BASE_DIR:", BASE_DIR)
+print("Files in BASE_DIR:", os.listdir(BASE_DIR))
+print("Output exists?", os.path.exists(os.path.join(BASE_DIR, "output")))
+if os.path.exists(os.path.join(BASE_DIR, "output")):
+    print("Output content:", os.listdir(os.path.join(BASE_DIR, "output")))
 
 # ---------------- 3. EDA ----------------
 with tabs[2]:
