@@ -13,13 +13,13 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import sys
 from pathlib import Path
-import java_bootstrap
+#import java_bootstrap
 
 # ---------------- Spark Session ----------------
 @st.cache_resource
 def init_spark():
     # Khởi động Java trên Cloud
-    java_bootstrap.ensure_java()
+    #java_bootstrap.ensure_java()
     
     # SparkSession
     spark = SparkSession.builder \
