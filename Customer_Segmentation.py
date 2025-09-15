@@ -13,8 +13,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import sys
 from pathlib import Path
-import streamlit.components.v1 as components
-from pdf2image import convert_from_path
+#import streamlit.components.v1 as components
+#from pdf2image import convert_from_path
 #import java_bootstrap
 
 # ---------------- Spark Session ----------------
@@ -281,34 +281,31 @@ with tabs[4]:
 with tabs[5]:
     st.header("📑 Final Report")
     pdf_file = "final_report.pdf"  # đặt file PDF vào repo cùng app
-
     if os.path.exists(pdf_file):
-        with open(pdf_file, "rb") as f:
-            pdf_bytes = f.read()
-
-        # Nút download
-        st.download_button(
-            label="📥 Download Report PDF",
-            data=pdf_bytes,
-            file_name="Customer_Segmentation_Report.pdf",
-            mime="application/pdf"
-        )
-
         try:
-            from pdf2image import convert_from_path
+            import base64
 
-            # Convert PDF thành list ảnh (mỗi trang 1 ảnh)
-            pages = convert_from_path(pdf_file, dpi=150)
+            with open(pdf_file, "rb") as f:
+                base64_pdf = base64.b64encode(f.read()).decode("utf-8")
 
-            st.success(f"📄 Report loaded successfully! ({len(pages)} pages)")
+            # Nhúng PDF trực tiếp
+            pdf_display = f"""
+            <iframe src="data:application/pdf;base64,{base64_pdf}" 
+                    width="100%" height="800" type="application/pdf"></iframe>
+            """
+            st.markdown(pdf_display, unsafe_allow_html=True)
 
-            # Hiển thị từng trang
-            for i, page in enumerate(pages, start=1):
-                st.image(page, caption=f"Trang {i}", use_container_width=True)
+            # Nút download cho user
+            with open(pdf_file, "rb") as f:
+                st.download_button(
+                    label="📥 Download Report PDF",
+                    data=f,
+                    file_name="Customer_Segmentation_Report.pdf",
+                    mime="application/pdf"
+                )
 
         except Exception as e:
             st.error(f"❌ Không load được PDF: {e}")
-            st.info("👉 Cần cài thư viện `pdf2image` và `poppler` để chạy được.")
     else:
         st.warning("⚠️ Report file not found. Vui lòng thêm `final_report.pdf` vào repo.")
 # ---------------- Footer ----------------
